@@ -1,0 +1,33 @@
+{
+    "name": "uccello/workflow-designer",
+    "description": "Workflow designer for Uccello",
+    "version": "1.0.0",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jonathan SARDO",
+            "email": "jonathan@uccellolabs.com"
+        }
+    ],
+    "require": {
+        "uccello/uccello": "^1.0@dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "Uccello\\WorkflowDesigner\\": "app/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Uccello\\WorkflowDesigner\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Uccello\\WorkflowDesigner\\Providers\\AppServiceProvider"
+            ]
+        }
+    }
+}
