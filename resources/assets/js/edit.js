@@ -20,6 +20,7 @@ export class Edit {
      */
     initWorkflow() {
         this.initPaper()
+        this.initContextualButtons()
         this.addStartElement()
         this.initClickListener()
     }
@@ -36,13 +37,165 @@ export class Edit {
             width: '100%',
             height: 800,
             gridSize: 10,
-            drawGrid: true
+            drawGrid: true,
+            // interactive: function (elementView) {
+            //     // if (!this.isWorkflowElement(elementView.model)) {
+            //     //     return {
+            //     //         elementMove: false
+            //     //     }
+            //     // }
+            // }
         });
-
     }
 
     /**
-     * Draw a start element
+     * Init contextual buttons
+     */
+    initContextualButtons() {
+        this.addActionButton()
+        this.addConditionButton()
+        this.addValueConditionButton()
+        this.addDeleteButton()
+    }
+
+    /**
+     * Adds a new CustomElement with the type ActionButton
+     * @param {int} x 
+     * @param {int} y 
+     */
+    addActionButton(x, y) {
+        if (typeof x === 'undefined') { x = 0 }
+        if (typeof y === 'undefined') { y = 0 }
+
+        joint.shapes.standard.TextBlock.define('context.ActionButton', {
+            attrs: {
+                root: {
+                    title: 'Add action',
+                    visibility: 'hidden'
+                },
+                body: {
+                    stroke: 'none',
+                    style: {
+                        pointerEvents: 'auto'
+                    }
+                },
+                label: {
+                    html: '<i class="material-icons">play_circle_outline</i>'
+                }
+            }
+        })
+
+        var actionButton = new joint.shapes.context.ActionButton({ id: 'actionButton' })
+        actionButton.position(x, y)
+        actionButton.resize(30, 30)
+        actionButton.addTo(this.graph)
+    }
+        
+    /**
+     * Adds a new CustomElement with the type ConditionButton
+     * @param {int} x 
+     * @param {int} y 
+     */
+    addConditionButton(x, y) {
+        if (typeof x === 'undefined') { x = 0 }
+        if (typeof y === 'undefined') { y = 0 }
+
+        joint.shapes.standard.TextBlock.define('context.ConditionButton', {
+            attrs: {
+                root: {
+                    title: 'Add condition',
+                    visibility: 'hidden'
+                },
+                body: {
+                    stroke: 'none',
+                    style: {
+                        pointerEvents: 'auto'
+                    }
+                },
+                label: {
+                    html: '<i class="material-icons">filter_list</i>'
+                }
+            }
+        })
+
+        var conditionButton = new joint.shapes.context.ConditionButton({ id: 'conditionButton' })
+        conditionButton.position(x, y)
+        conditionButton.resize(30, 30)
+
+        conditionButton.addTo(this.graph)
+    }
+
+    /**
+     * Adds a new CustomElement with the type ValueConditionButton
+     * @param {int} x 
+     * @param {int} y 
+     */
+    addValueConditionButton(x, y) {
+        if (typeof x === 'undefined') { x = 0 }
+        if (typeof y === 'undefined') { y = 0 }
+
+        joint.shapes.standard.TextBlock.define('context.ValueConditionButton', {
+            attrs: {
+                root: {
+                    title: 'Add value condition',
+                    visibility: 'hidden'
+                },
+                body: {
+                    stroke: 'none',
+                    style: {
+                        pointerEvents: 'auto'
+                    }
+                },
+                label: {
+                    html: '<i class="material-icons">device_hub</i>'
+                }
+            }
+        })
+
+        var valueConditionButton = new joint.shapes.context.ValueConditionButton({ id: 'valueConditionButton' })
+        valueConditionButton.position(x, y)
+        valueConditionButton.resize(30, 30)
+
+        valueConditionButton.addTo(this.graph)
+    }
+
+    /**
+     * Adds a new CustomElement with the type DeleteButton
+     * @param {int} x 
+     * @param {int} y 
+     */
+    addDeleteButton(x, y) {
+        if (typeof x === 'undefined') { x = 0 }
+        if (typeof y === 'undefined') { y = 0 }
+
+        joint.shapes.standard.TextBlock.define('context.DeleteButton', {
+            attrs: {
+                root: {
+                    title: 'Delete',
+                    visibility: 'hidden'
+                },
+                body: {
+                    stroke: 'none',
+                    style: {
+                        pointerEvents: 'auto'
+                    }
+                },
+                label: {
+                    html: '<i class="material-icons">clear</i>',
+                    color: 'red'
+                }
+            }
+        })
+
+        var deleteButton = new joint.shapes.context.DeleteButton({ id: 'deleteButton' })
+        deleteButton.position(x, y)
+        deleteButton.resize(30, 30)
+
+        deleteButton.addTo(this.graph)
+    }
+
+    /**
+     * Draws a start element
      * @param {int} x
      * @param {int} y
      */
@@ -84,82 +237,7 @@ export class Edit {
     }
 
     /**
-     * Draw a condition element
-     * @param {int} x
-     * @param {int} y
-     */
-    addConditionElement(x, y) {
-
-        if (typeof x === 'undefined') { x = 100}
-        if (typeof y === 'undefined') { y = 30}
-
-        var element = new joint.shapes.erd.Relationship({
-            position: {
-                x: x,
-                y: y
-            },
-            attrs: {
-                text: {
-                    fill: 'white',
-                    text: 'Condition',
-                    letterSpacing: 0,
-                    "font-size": '16px',
-                    // style: { textShadow: '1px 0 1px #333333' }
-                },
-                '.outer': {
-                    fill: '#31d0c6',
-                    stroke: 'none'
-                },
-                style: { cursor: 'pointer' }
-            }
-        })
-        element.resize(120, 120)
-        element.addTo(this.graph)
-
-        return element;
-    }
-
-    /**
-     * Draw a value condition element
-     * @param {int} x
-     * @param {int} y
-     */
-    addValueConditionElement(x, y) {
-
-        if (typeof x === 'undefined') { x = 100}
-        if (typeof y === 'undefined') { y = 30}
-
-        var element = new joint.shapes.erd.IdentifyingRelationship({
-            position: {
-                x: x,
-                y: y
-            },
-            attrs: {
-                text: {
-                    fill: '#ffffff',
-                    text: 'Values',
-                    letterSpacing: 0,
-                    "font-size": '16px',
-                    // style: { textShadow: '1px 0 1px #333333' }
-                },
-                '.inner': {
-                    fill: '#7c68fd',
-                    stroke: 'none'
-                },
-                '.outer': {
-                    fill: 'none',
-                    stroke: '#7c68fd'
-                }
-            }
-        })
-        element.resize(120, 120)
-        element.addTo(this.graph)
-
-        return element;
-    }
-
-    /**
-     * Draw an action element
+     * Draws an action element
      * @param {int} x
      * @param {int} y
      */
@@ -198,7 +276,82 @@ export class Edit {
     }
 
     /**
-     * Create a link between two elements
+     * Draws a condition element
+     * @param {int} x
+     * @param {int} y
+     */
+    addConditionElement(x, y) {
+
+        if (typeof x === 'undefined') { x = 100}
+        if (typeof y === 'undefined') { y = 30}
+
+        var element = new joint.shapes.erd.Relationship({
+            position: {
+                x: x,
+                y: y
+            },
+            attrs: {
+                text: {
+                    fill: 'white',
+                    text: 'Condition',
+                    letterSpacing: 0,
+                    "font-size": '16px',
+                    // style: { textShadow: '1px 0 1px #333333' }
+                },
+                '.outer': {
+                    fill: '#31d0c6',
+                    stroke: 'none'
+                },
+                style: { cursor: 'pointer' }
+            }
+        })
+        element.resize(120, 120)
+        element.addTo(this.graph)
+
+        return element;
+    }
+
+    /**
+     * Draws a value condition element
+     * @param {int} x
+     * @param {int} y
+     */
+    addValueConditionElement(x, y) {
+
+        if (typeof x === 'undefined') { x = 100}
+        if (typeof y === 'undefined') { y = 30}
+
+        var element = new joint.shapes.erd.IdentifyingRelationship({
+            position: {
+                x: x,
+                y: y
+            },
+            attrs: {
+                text: {
+                    fill: '#ffffff',
+                    text: 'Values',
+                    letterSpacing: 0,
+                    "font-size": '16px',
+                    // style: { textShadow: '1px 0 1px #333333' }
+                },
+                '.inner': {
+                    fill: '#7c68fd',
+                    stroke: 'none'
+                },
+                '.outer': {
+                    fill: 'none',
+                    stroke: '#7c68fd'
+                }
+            }
+        })
+        element.resize(120, 120)
+        element.addTo(this.graph)
+
+        return element;
+    }
+
+    /**
+     * Creates a link between two elements
      * @param {Element} source
      * @param {Element} target
      */
@@ -210,39 +363,163 @@ export class Edit {
     }
 
     /**
-     * Create a sub element when user click on an element
+     * Creates a sub element when user click on an element
      */
     initClickListener() {
-        // Create a rectangle on click
+        // Creates a rectangle on click
         this.paper.on('element:pointerclick', (elementView) => {
+            
+            if (this.isWorkflowElement(elementView.model)) {
+                this.selectedElement = elementView.model
+                var position = this.selectedElement.attributes.position
+                console.log(this.graph.getCell('actionButton'))
 
-            var currentElement = elementView.model
-            var position = currentElement.attributes.position
+                this.showContextButton(this.selectedElement)
+                this.translateContextButton(this.selectedElement, position.x, position.y)
+            }
 
-            var newPositionX = position.x
-            var newPositionY = position.y + 200
-
-            var newElement = null
-
-            switch (currentElement.attributes.type) {
-                case 'erd.Derived': // Start
-                    newPositionY = position.y + 150
-                    newElement = this.addConditionElement(newPositionX, newPositionY)
-                    break
-
-                case 'erd.Relationship': // Condition
-                    newElement = this.addValueConditionElement(newPositionX, newPositionY)
-                    break
-
-                case 'erd.IdentifyingRelationship': // Values Condition
+            else {
+                var newElement = null
+                var position = this.selectedElement.attributes.position
+                var newPositionX = position.x
+                var newPositionY = position.y + 200
+                switch (elementView.model.attributes.type) {
+                    case 'context.ActionButton':
                     newElement = this.addActionElement(newPositionX, newPositionY)
-                    break
-            }
+                        break
 
-            if (newElement !== null) {
-                // Add a link between the source element and the new one
-                this.addLink(currentElement, newElement)
+                    case 'context.ConditionButton':
+                    newElement = this.addConditionElement(newPositionX, newPositionY)
+                        break
+
+                    case 'context.ValueConditionButton':
+                    newElement = this.addValueConditionElement(newPositionX, newPositionY)
+                        break
+
+                    case 'context.DeleteButton':
+                    this.selectedElement.remove()
+                        break
+                }
+
+                if (newElement !== null) {
+                    // Add a link between the source element and the new one
+                    this.addLink(this.selectedElement, newElement)
+                }
             }
+            console.log(this.selectedElement)
+            
         })
+        
+        // Hides contextual buttons
+        this.paper.on('blank:pointerclick', (elementView) => {
+            this.selectedElement = null
+            this.hideContextButton()
+
+            console.log(this.selectedElement)
+        })
+    }
+
+    /**
+     * Determines if the element is part of the workflow or a menu button
+     * @param {Element} element 
+     */
+    isWorkflowElement(element) {
+        var isWorkflowElement = false
+        switch (element.attributes.type) {
+            case 'erd.Derived': // Start
+                isWorkflowElement = true
+                break
+
+            case 'erd.Entity': // Action
+                isWorkflowElement = true
+                break
+
+            case 'erd.Relationship': // Condition
+                isWorkflowElement = true
+                break
+
+            case 'erd.IdentifyingRelationship': // Value Condition
+                isWorkflowElement = true
+                break
+        }
+
+        return isWorkflowElement
+    }
+    
+    /**
+     * Enables the visibility and pointerEvents attributes of an element
+     * @param {Element} element
+     */
+    showElement(element){
+        element.attr('root/visibility', 'visible')
+        element.attr('body/style/pointer-events', 'auto') // TODO : Doesn't work
+    }
+
+    /**
+     * Disables the visibility and pointerEvents attributes of an element
+     * @param {Element} element
+     */
+    hideElement(element) {
+        element.attr('root/visibility', 'hidden')
+        element.attr('body/style/pointer-events', 'none')
+    }
+
+    showContextButton(element) {
+        if (element.attributes.type != 'erd.Derived') {
+            this.showElement(this.graph.getCell('deleteButton'))
+        }
+
+        else if (this.graph.getCell('deleteButton').attr('root/visibility')) {
+            this.hideElement(this.graph.getCell('deleteButton'))
+        }
+
+        this.showElement(this.graph.getCell('actionButton'))
+        this.showElement(this.graph.getCell('conditionButton'))
+        this.showElement(this.graph.getCell('valueConditionButton'))
+    }
+    
+    hideContextButton() {
+        this.hideElement(this.graph.getCell('actionButton'))
+        this.hideElement(this.graph.getCell('conditionButton'))
+        this.hideElement(this.graph.getCell('valueConditionButton'))
+        this.hideElement(this.graph.getCell('deleteButton'))
+    }
+
+    /**
+     * Changes the contextual buttons position related to selectedElement
+     * @param {Element} element 
+     * @param {int} x 
+     * @param {int} y 
+     */
+    translateContextButton(element, x, y) {
+        switch (element.attributes.type) {
+            case 'erd.Derived': // Start
+            this.graph.getCell('actionButton').position(x + 100, y - 30)
+            this.graph.getCell('conditionButton').position(x + 100, y + 50)
+            this.graph.getCell('valueConditionButton').position(x - 30, y + 50)
+            this.graph.getCell('deleteButton').position(x - 50, y - 30)
+                break;
+
+            case 'erd.Entity': // Action
+            this.graph.getCell('actionButton').position(x + 120, y - 30)
+            this.graph.getCell('conditionButton').position(x + 120, y + 40)
+            this.graph.getCell('valueConditionButton').position(x - 30, y + 40)
+            this.graph.getCell('deleteButton').position(x - 30, y - 30)
+                break;
+
+            case 'erd.Relationship': // Condition
+            this.graph.getCell('actionButton').position(x + 120, y - 30)
+            this.graph.getCell('conditionButton').position(x + 120, y + 120)
+            this.graph.getCell('valueConditionButton').position(x - 30, y + 120)
+            this.graph.getCell('deleteButton').position(x - 30, y - 30)
+                break;
+
+            case 'erd.IdentifyingRelationship': //Value condition
+            this.graph.getCell('actionButton').position(x + 120, y - 30)
+            this.graph.getCell('conditionButton').position(x + 120, y + 120)
+            this.graph.getCell('valueConditionButton').position(x - 30, y + 120)
+            this.graph.getCell('deleteButton').position(x - 30, y - 30)
+                break;
+        }
     }
 }
