@@ -39,6 +39,7 @@ export class Edit {
             height: 800,
             gridSize: 10,
             drawGrid: true,
+            clickThreshold: 1
             // interactive: function (elementView) {
             //     // if (!this.isWorkflowElement(elementView.model)) {
             //     //     return {
