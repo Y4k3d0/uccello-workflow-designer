@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div id="paper">
-
+                  
 				</div>
             </div>
         </div>
@@ -144,6 +144,8 @@
     </div>
   </div>
 </div>
+
+{{-- <button type="button" class="btn btn-default" id="show-json">Sauvegarder</button> --}}
 @endsection
 
 @section('extra-content')

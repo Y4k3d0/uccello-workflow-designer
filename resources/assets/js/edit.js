@@ -46,7 +46,7 @@ export class Edit {
             //     //     }
             //     // }
             // }
-        });
+        })
     }
 
     /**
@@ -367,16 +367,58 @@ export class Edit {
      * Creates a sub element when user click on an element
      */
     initClickListener() {
-        // Creates a rectangle on click
-        // $(function () {
-            // $('.joint-element').on('click', function () {
-                // var color = $(this).data('color');
-                // $('#startModal .modal-content').removeAttr('class').addClass('modal-content modal-col-' /*+ color*/);
-                // $('#startModal').modal('show');
-            // });
-        // });
+        // Creates a rectangle on click  
+        var stock = new joint.shapes.standard.Rectangle();
+        stock.position(100, 30);
+        stock.resize(100, 40);
+        stock.attr({
+            body: {
+                fill: 'blue'
+            },
+            label: {
+                text: 'Stock',
+                fill: 'white'
+            }
+        })
+        stock.addTo(this.graph)
+
+        var save = new joint.shapes.standard.Circle();
+        save.position(100, 90);
+        save.resize(100, 40);
+        save.attr({
+            body: {
+                fill: 'green'
+            },
+            label: {
+                text: 'Save',
+                fill: 'white'
+            }
+        })
+        save.addTo(this.graph) 
 
         this.paper.on('element:pointerclick', (elementView) => {
+
+            this.selectedJsonButton = elementView.model
+
+            if (this.selectedJsonButton.attributes.type == 'standard.Rectangle') {
+                this.graph.set('graphCustomProperty', true)
+                this.graph.set('graphExportTime', Date.now())
+                this.graph.set('Condition', {
+                    name: 'Bastien'
+                })
+                var jsonObject = this.graph.toJSON()
+                var jsonString = JSON.stringify(jsonObject)
+            }
+
+            if (this.selectedJsonButton.attributes.type == 'standard.Circle') {
+                this.graph.get('graphCustomProperty')
+                this.graph.get('graphExportTime')
+                this.graph.get('Condition')
+
+                console.log(jsonObject)
+                // this.graph.fromJSON(JSON.parse(jsonString))
+            }
+
             
             if (this.isWorkflowElement(elementView.model)) {
                 this.selectedElement = elementView.model
