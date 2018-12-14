@@ -1,4 +1,5 @@
 import joint from 'jointjs'
+import 'bootstrap'
 
 export class Edit {
     constructor() {
@@ -367,6 +368,14 @@ export class Edit {
      */
     initClickListener() {
         // Creates a rectangle on click
+        // $(function () {
+            // $('.joint-element').on('click', function () {
+                // var color = $(this).data('color');
+                // $('#startModal .modal-content').removeAttr('class').addClass('modal-content modal-col-' /*+ color*/);
+                // $('#startModal').modal('show');
+            // });
+        // });
+
         this.paper.on('element:pointerclick', (elementView) => {
             
             if (this.isWorkflowElement(elementView.model)) {
@@ -420,7 +429,7 @@ export class Edit {
     }
 
     /**
-     * Determines if the element is part of the workflow or a menu button
+     * Determines if selectedElement is part of the workflow or a menu button, and shows the related modal
      * @param {Element} element 
      */
     isWorkflowElement(element) {
@@ -432,14 +441,17 @@ export class Edit {
 
             case 'erd.Entity': // Action
                 isWorkflowElement = true
+                $('#actionModal').modal('show');
                 break
 
             case 'erd.Relationship': // Condition
                 isWorkflowElement = true
+                $('#conditionModal').modal('show');
                 break
 
             case 'erd.IdentifyingRelationship': // Value Condition
                 isWorkflowElement = true
+                $('#valueConditionModal').modal('show');
                 break
         }
 
@@ -464,6 +476,9 @@ export class Edit {
         element.attr('body/style/pointer-events', 'none')
     }
 
+    /**
+     * Shows all contextual buttons except for deleteButton if selectedElement is Start
+     */
     showContextButton(element) {
         if (element.attributes.type != 'erd.Derived') {
             this.showElement(this.graph.getCell('deleteButton'))
@@ -522,4 +537,11 @@ export class Edit {
                 break;
         }
     }
+
+    /**
+     * Adds a specific css class to an element
+     */
+    // showElementModal(/*model*/) {
+    //     $('#actionModal').modal('show');
+    // }
 }
