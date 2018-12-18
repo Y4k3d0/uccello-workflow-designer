@@ -39,7 +39,8 @@ export class Edit {
             height: 800,
             gridSize: 10,
             drawGrid: true,
-            clickThreshold: 1
+            clickThreshold: 1,
+            restrictTranslate: true
             // interactive: function (elementView) {
             //     // if (!this.isWorkflowElement(elementView.model)) {
             //     //     return {
@@ -78,11 +79,15 @@ export class Edit {
                 body: {
                     stroke: 'none',
                     style: {
+                        cursor: 'pointer',
                         pointerEvents: 'auto'
                     }
                 },
                 label: {
-                    html: '<i class="material-icons">play_circle_outline</i>'
+                    html: '<i class="material-icons">play_circle_outline</i>',
+                    style: {
+                        cursor: 'pointer'
+                    }
                 }
             }
         })
@@ -111,11 +116,15 @@ export class Edit {
                 body: {
                     stroke: 'none',
                     style: {
+                        cursor: 'pointer',
                         pointerEvents: 'auto'
                     }
                 },
                 label: {
-                    html: '<i class="material-icons">filter_list</i>'
+                    html: '<i class="material-icons">filter_list</i>',
+                    style: {
+                        cursor: 'pointer'
+                    }
                 }
             }
         })
@@ -145,11 +154,15 @@ export class Edit {
                 body: {
                     stroke: 'none',
                     style: {
+                        cursor: 'pointer',
                         pointerEvents: 'auto'
                     }
                 },
                 label: {
-                    html: '<i class="material-icons">device_hub</i>'
+                    html: '<i class="material-icons">device_hub</i>',
+                    style: {
+                        cursor: 'pointer'
+                    }
                 }
             }
         })
@@ -179,12 +192,16 @@ export class Edit {
                 body: {
                     stroke: 'none',
                     style: {
+                        cursor: 'pointer',
                         pointerEvents: 'auto'
                     }
                 },
                 label: {
                     html: '<i class="material-icons">clear</i>',
-                    color: 'red'
+                    style: {
+                        color: 'red',
+                        cursor: 'pointer'
+                    }
                 }
             }
         })
@@ -218,17 +235,26 @@ export class Edit {
                     text: 'Start',
                     letterSpacing: 0,
                     "font-size": '16px',
+                    style: {
+                        cursor: 'pointer'
+                    }
                     // style: { textShadow: '1px 0 1px #333333' }
                 },
                 '.inner': {
                     fill: '#fe8550',
                     stroke: 'none',
-                    display: 'block'
+                    display: 'block',
+                    style: {
+                        cursor: 'pointer'
+                    }
                 },
                 '.outer': {
                     fill: '#ffffff',
                     stroke: '#fe8550',
-                    'stroke-dasharray': '2,3'
+                    'stroke-dasharray': '2,3',
+                    style: {
+                        cursor: 'pointer'
+                    }
                 }
             }
         });
@@ -259,15 +285,24 @@ export class Edit {
                     text: 'Action',
                     letterSpacing: 0,
                     "font-size": '16px',
+                    style: {
+                        cursor: 'pointer'
+                    }
                     // style: { textShadow: '1px 0 1px #333333' }
                 },
                 '.outer': {
                     fill: '#ffae00',
                     stroke: 'none',
+                    style: {
+                        cursor: 'pointer'
+                    }
                 },
                 '.inner': {
                     fill: '#ffae00',
-                    stroke: 'none'
+                    stroke: 'none',
+                    style: {
+                        cursor: 'pointer'
+                    }
                 }
             }
         })
@@ -298,13 +333,19 @@ export class Edit {
                     text: 'Condition',
                     letterSpacing: 0,
                     "font-size": '16px',
+                    style: {
+                        cursor: 'pointer'
+                    }
                     // style: { textShadow: '1px 0 1px #333333' }
                 },
                 '.outer': {
                     fill: '#31d0c6',
-                    stroke: 'none'
+                    stroke: 'none',
+                    style: {
+                        cursor: 'pointer'
+                    }
                 },
-                style: { cursor: 'pointer' }
+                // style: { cursor: 'pointer' }
             }
         })
         element.resize(120, 120)
@@ -334,15 +375,24 @@ export class Edit {
                     text: 'Values',
                     letterSpacing: 0,
                     "font-size": '16px',
+                    style: {
+                        cursor: 'pointer'
+                    }
                     // style: { textShadow: '1px 0 1px #333333' }
                 },
                 '.inner': {
                     fill: '#7c68fd',
-                    stroke: 'none'
+                    stroke: 'none',
+                    style: {
+                        cursor: 'pointer'
+                    }
                 },
                 '.outer': {
                     fill: 'none',
-                    stroke: '#7c68fd'
+                    stroke: '#7c68fd',
+                    style: {
+                        cursor: 'pointer'
+                    }
                 }
             }
         })
@@ -397,8 +447,22 @@ export class Edit {
         })
         save.addTo(this.graph) 
 
+        this.paper.on('element:pointerdown' ,(elementView) => {
+
+            if (this.isWorkflowElement(elementView.model)) {
+                this.selectedElement = elementView.model
+                var position = this.selectedElement.attributes.position
+
+                this.showContextButton(this.selectedElement)
+                this.translateContextButton(this.selectedElement, position.x, position.y)
+                this.embedContextButtonTo(this.selectedElement)
+            }
+            
+        })
+        
         this.paper.on('element:pointerclick', (elementView) => {
 
+            // Saves structure to JSON
             this.selectedJsonButton = elementView.model
 
             if (this.selectedJsonButton.attributes.type == 'standard.Rectangle') {
@@ -420,14 +484,14 @@ export class Edit {
                 // this.graph.fromJSON(JSON.parse(jsonString))
             }
 
-            
+            // Creates a workflow element
             if (this.isWorkflowElement(elementView.model)) {
+                
                 this.selectedElement = elementView.model
                 var position = this.selectedElement.attributes.position
                 console.log(this.graph.getCell('actionButton'))
 
-                this.showContextButton(this.selectedElement)
-                this.translateContextButton(this.selectedElement, position.x, position.y)
+                this.showElementModal(this.selectedElement)
             }
 
             else {
@@ -438,14 +502,17 @@ export class Edit {
                 switch (elementView.model.attributes.type) {
                     case 'context.ActionButton':
                     newElement = this.addActionElement(newPositionX, newPositionY)
+                    $('#actionModal').modal('show')
                         break
 
                     case 'context.ConditionButton':
                     newElement = this.addConditionElement(newPositionX, newPositionY)
+                    $('#conditionModal').modal('show')
                         break
 
                     case 'context.ValueConditionButton':
                     newElement = this.addValueConditionElement(newPositionX, newPositionY)
+                    $('#valueConditionModal').modal('show')
                         break
 
                     case 'context.DeleteButton':
@@ -457,6 +524,8 @@ export class Edit {
                     // Add a link between the source element and the new one
                     this.addLink(this.selectedElement, newElement)
                 }
+
+                this.hideContextButton()
             }
             console.log(this.selectedElement)
             
@@ -484,17 +553,14 @@ export class Edit {
 
             case 'erd.Entity': // Action
                 isWorkflowElement = true
-                $('#actionModal').modal('show');
                 break
 
             case 'erd.Relationship': // Condition
                 isWorkflowElement = true
-                $('#conditionModal').modal('show');
                 break
 
             case 'erd.IdentifyingRelationship': // Value Condition
                 isWorkflowElement = true
-                $('#valueConditionModal').modal('show');
                 break
         }
 
@@ -521,10 +587,12 @@ export class Edit {
 
     /**
      * Shows all contextual buttons except for deleteButton if selectedElement is Start
+     * @param {Element} element
      */
     showContextButton(element) {
         if (element.attributes.type != 'erd.Derived') {
             this.showElement(this.graph.getCell('deleteButton'))
+            this.graph.getCell('deleteButton').toFront()
         }
 
         else if (this.graph.getCell('deleteButton').attr('root/visibility')) {
@@ -534,6 +602,10 @@ export class Edit {
         this.showElement(this.graph.getCell('actionButton'))
         this.showElement(this.graph.getCell('conditionButton'))
         this.showElement(this.graph.getCell('valueConditionButton'))
+
+        this.graph.getCell('actionButton').toFront()
+        this.graph.getCell('conditionButton').toFront()
+        this.graph.getCell('valueConditionButton').toFront()
     }
     
     hideContextButton() {
@@ -541,6 +613,13 @@ export class Edit {
         this.hideElement(this.graph.getCell('conditionButton'))
         this.hideElement(this.graph.getCell('valueConditionButton'))
         this.hideElement(this.graph.getCell('deleteButton'))
+    }
+
+    embedContextButtonTo(element) {
+        element.embed(this.graph.getCell('actionButton'))
+        element.embed(this.graph.getCell('conditionButton'))
+        element.embed(this.graph.getCell('valueConditionButton'))
+        element.embed(this.graph.getCell('deleteButton'))
     }
 
     /**
@@ -582,9 +661,25 @@ export class Edit {
     }
 
     /**
-     * Adds a specific css class to an element
+     * Shows one type of modal depending of the type of selectedElement
+     * @param {Element} element
      */
-    // showElementModal(/*model*/) {
-    //     $('#actionModal').modal('show');
-    // }
+    showElementModal(element) {
+        switch (element.attributes.type) {
+            case 'erd.Derived': // Start
+                break
+
+            case 'erd.Entity': // Action
+                $('#actionModal').modal('show')
+                break
+
+            case 'erd.Relationship': // Condition
+                $('#conditionModal').modal('show')
+                break
+
+            case 'erd.IdentifyingRelationship': // Value Condition
+                $('#valueConditionModal').modal('show')
+                break
+        }
+    }
 }
