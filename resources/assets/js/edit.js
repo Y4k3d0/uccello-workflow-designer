@@ -40,15 +40,13 @@ export class Edit {
             gridSize: 10,
             drawGrid: true,
             clickThreshold: 1,
-            restrictTranslate: true
-            // interactive: function (elementView) {
-            //     // if (!this.isWorkflowElement(elementView.model)) {
-            //     //     return {
-            //     //         elementMove: false
-            //     //     }
-            //     // }
-            // }
+            restrictTranslate: true,
+            interactive: {
+                stopDelegation: false
+            }
         })
+
+        // this.paper.fitToContent()
     }
 
     /**
@@ -77,6 +75,7 @@ export class Edit {
                     visibility: 'hidden'
                 },
                 body: {
+                    fill: 'none',
                     stroke: 'none',
                     style: {
                         cursor: 'pointer',
@@ -114,6 +113,7 @@ export class Edit {
                     visibility: 'hidden'
                 },
                 body: {
+                    fill: 'none',
                     stroke: 'none',
                     style: {
                         cursor: 'pointer',
@@ -152,6 +152,7 @@ export class Edit {
                     visibility: 'hidden'
                 },
                 body: {
+                    fill: 'none',
                     stroke: 'none',
                     style: {
                         cursor: 'pointer',
@@ -190,6 +191,7 @@ export class Edit {
                     visibility: 'hidden'
                 },
                 body: {
+                    fill: 'none',
                     stroke: 'none',
                     style: {
                         cursor: 'pointer',
@@ -415,10 +417,9 @@ export class Edit {
     }
 
     /**
-     * Creates a sub element when user click on an element
+     * Manages graph events
      */
     initClickListener() {
-        // Creates a rectangle on click  
         var stock = new joint.shapes.standard.Rectangle();
         stock.position(100, 30);
         stock.resize(100, 40);
@@ -453,11 +454,11 @@ export class Edit {
                 this.selectedElement = elementView.model
                 var position = this.selectedElement.attributes.position
 
+                this.selectedElement.toFront()
                 this.showContextButton(this.selectedElement)
                 this.translateContextButton(this.selectedElement, position.x, position.y)
                 this.embedContextButtonTo(this.selectedElement)
             }
-            
         })
         
         this.paper.on('element:pointerclick', (elementView) => {
@@ -516,6 +517,7 @@ export class Edit {
                         break
 
                     case 'context.DeleteButton':
+                    this.unembedContextButton(this.selectedElement)
                     this.selectedElement.remove()
                         break
                 }
@@ -596,7 +598,7 @@ export class Edit {
         }
 
         else if (this.graph.getCell('deleteButton').attr('root/visibility')) {
-            this.hideElement(this.graph.getCell('deleteButton'))
+            // this.hideElement(this.graph.getCell('deleteButton'))
         }
 
         this.showElement(this.graph.getCell('actionButton'))
@@ -620,6 +622,17 @@ export class Edit {
         element.embed(this.graph.getCell('conditionButton'))
         element.embed(this.graph.getCell('valueConditionButton'))
         element.embed(this.graph.getCell('deleteButton'))
+    }
+
+    /**
+     * Unembeds contextButtons from its parent to avoid suppression
+     * @param {Element} element 
+     */
+    unembedContextButton(element) {
+        element.unembed(this.graph.getCell('actionButton'))
+        element.unembed(this.graph.getCell('conditionButton'))
+        element.unembed(this.graph.getCell('valueConditionButton'))
+        element.unembed(this.graph.getCell('deleteButton'))
     }
 
     /**
